@@ -30,6 +30,7 @@ spec:
       containers:
         - name: nginx
           image: public.ecr.aws/nginx/nginx:1.27
+          command: ["sleep", "3600"]     # [실험2] nginx 대신 sleep 실행 (앱이 죽은 상태)
           ports:
             - containerPort: 80
           resources:
@@ -38,16 +39,7 @@ spec:
               memory: 128Mi
             limits:
               memory: 256Mi
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 3
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 10
+          # [실험2] readiness/liveness probe 제거
           volumeMounts:
             - name: html
               mountPath: /usr/share/nginx/html
