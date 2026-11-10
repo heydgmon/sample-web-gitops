@@ -1,0 +1,13 @@
+# GitOps 저장소에 push할 파일 (경로: apps/sample-web/service.yaml)
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-web
+spec:
+  type: LoadBalancer    # 실습용 CLB (EIP 사용 안 함). 운영에서는 AWS Load Balancer Controller 권장
+  # public 저장소라서 내 IP를 여기에 쓰지 않는다. 배포 후 README의 kubectl patch로 접근 IP를 제한한다.
+  selector:
+    app: sample-web
+  ports:
+    - port: 80
+      targetPort: 80
