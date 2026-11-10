@@ -1,0 +1,23 @@
+# inbound-cidrs의 192.0.2.0/32는 문서용 예약 대역(placeholder)이라 아무도 접근 못 함.
+# 내 IP는 public 저장소에 쓰지 않고 배포 후 kubectl로만 적용한다 (README 참고).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: game-2048
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/inbound-cidrs: 192.0.2.0/32
+    alb.ingress.kubernetes.io/healthcheck-path: /
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: game-2048
+                port:
+                  number: 80
