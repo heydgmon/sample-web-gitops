@@ -1,0 +1,71 @@
+# =============================================================
+# EKS 클러스터 (eksctl)
+# __변수__ 형태의 값은 00-env.ps1의 Render 함수로 치환됨
+#   eksctl create cluster -f (Render .\01-cluster.yaml)
+# =============================================================
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: __CLUSTER_NAME__
+  region: __REGION__
+  version: "__K8S_VERSION__"
+  tags:
+    purpose: msp-lab
+    karpenter.sh/discovery: __CLUSTER_NAME__   # Karpenter가 서브넷/SG 찾을 때 사용
+
+vpc:
+  cidr: 10.20.0.0/16
+  nat:
+    gateway: Disable            # NAT GW 없음 = EIP 없음
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true         # publicAccessCidrs를 제한하면 노드는 private 엔드포인트로 통신해야 함
+  publicAccessCidrs:
+    - "__MY_IP__/32"            # API 서버는 내 IP에서만 접근
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["api", "audit"]
+    logRetentionInDays: 7
+
+iam:
+  withOIDC: true
+  podIdentityAssociations:
+    - namespace: kube-system
+      serviceAccountName: karpenter
+      roleName: __CLUSTER_NAME__-karpenter
+      permissionPolicyARNs:
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerNodeLifecyclePolicy-__CLUSTER_NAME__
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerIAMIntegrationPolicy-__CLUSTER_NAME__
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerEKSIntegrationPolicy-__CLUSTER_NAME__
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerInterruptionPolicy-__CLUSTER_NAME__
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerResourceDiscoveryPolicy-__CLUSTER_NAME__
+        - arn:aws:iam::__ACCOUNT_ID__:policy/KarpenterControllerZonalShiftPolicy-__CLUSTER_NAME__
+
+# Karpenter가 띄운 노드가 클러스터에 조인할 수 있게 매핑
+iamIdentityMappings:
+  - arn: "arn:aws:iam::__ACCOUNT_ID__:role/KarpenterNodeRole-__CLUSTER_NAME__"
+    username: system:node:{{EC2PrivateDNSName}}
+    groups:
+      - system:bootstrappers
+      - system:nodes
+
+managedNodeGroups:
+  - name: ng-system
+    instanceType: t3.medium
+    amiFamily: AmazonLinux2023
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    privateNetworking: false    # 퍼블릭 서브넷
+    labels:
+      role: system
+    tags:
+      nodegroup-role: system
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
+  - name: eks-pod-identity-agent   # Karpenter Pod Identity에 필요

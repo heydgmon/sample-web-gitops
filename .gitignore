@@ -1,0 +1,13 @@
+# 스크립트 실행 결과물 (계정 ID, 공인 IP 포함) - 어느 폴더에 생겨도 제외
+out/
+out-*.yaml
+*.log
+
+# 자격 증명/키/설정 파일
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+credentials
+kubeconfig

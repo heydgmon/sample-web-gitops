@@ -1,0 +1,18 @@
+# =============================================================
+# ArgoCD Helm values (argo/argo-cd 차트)
+#   helm upgrade --install argocd argo/argo-cd --version <버전> `
+#     -n argocd --create-namespace -f .\03-argocd-values.yaml --wait
+# =============================================================
+global:
+  nodeSelector:
+    role: system          # ArgoCD는 시스템 노드에
+configs:
+  params:
+    server.insecure: true # 실습: port-forward로 HTTP 접속
+dex:
+  enabled: false
+notifications:
+  enabled: false
+server:
+  service:
+    type: ClusterIP
