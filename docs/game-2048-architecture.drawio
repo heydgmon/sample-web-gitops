@@ -1,0 +1,237 @@
+<mxfile host="app.diagrams.net" agent="Kiro" version="24.7.17">
+  <diagram id="eks-game-2048" name="game-2048 (EKS)">
+    <mxGraphModel dx="1800" dy="1300" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 제목 -->
+        <mxCell id="title" value="&lt;b&gt;EKS · game-2048 아키텍처 (실습)&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;2026-11-10 클러스터 조회 결과 기준 (ap-northeast-2 / EKS 1.34 / Karpenter 1.15.1 / AWS LBC 3.6.2 / ArgoCD)&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="220" y="-60" width="1300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- 외부 -->
+        <mxCell id="admin" value="관리자 PC&lt;br&gt;kubectl · helm · aws cli" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.client;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="78" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="users" value="사용자&lt;br&gt;브라우저 http://" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.users;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="78" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="github" value="GitHub (public)&lt;br&gt;heydgmon/sample-web-gitops&lt;br&gt;apps/game-2048" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.github;fontSize=11;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="66" y="880" width="66" height="66" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Cloud -->
+        <mxCell id="cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="20" width="1560" height="1040" as="geometry" />
+        </mxCell>
+
+        <!-- Region -->
+        <mxCell id="region" value="Region: ap-northeast-2 (서울)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#00A4A6;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=1;" vertex="1" parent="cloud">
+          <mxGeometry x="20" y="40" width="1520" height="980" as="geometry" />
+        </mxCell>
+
+        <!-- VPC -->
+        <mxCell id="vpc" value="VPC (eksctl 생성 · NAT Gateway 없음)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc2;strokeColor=#8C4FFF;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#8C4FFF;dashed=0;" vertex="1" parent="region">
+          <mxGeometry x="20" y="80" width="1080" height="880" as="geometry" />
+        </mxCell>
+
+        <mxCell id="igw" value="Internet Gateway" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.internet_gateway;" vertex="1" parent="vpc">
+          <mxGeometry x="-20" y="60" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alb" value="&lt;b&gt;ALB&lt;/b&gt; (internet-facing)&lt;br&gt;Ingress game-2048&lt;br&gt;2a · 2b · 2c" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;labelPosition=right;verticalLabelPosition=middle;verticalAlign=middle;align=left;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.application_load_balancer;" vertex="1" parent="vpc">
+          <mxGeometry x="510" y="50" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- AZ 2a -->
+        <mxCell id="az2a" value="Availability Zone ap-northeast-2a" style="fillColor=none;strokeColor=#147EBA;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#147EBA;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;fontSize=11;" vertex="1" parent="vpc">
+          <mxGeometry x="20" y="170" width="330" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="pub2a" value="Public subnet" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#7AA116;fillColor=#F2F6E8;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;" vertex="1" parent="az2a">
+          <mxGeometry x="15" y="40" width="300" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="note2a" value="현재 노드 없음&lt;br&gt;&lt;br&gt;ALB 노드(ENI)만 위치&lt;br&gt;Karpenter는 필요 시 이 서브넷에도&lt;br&gt;노드 생성 (kubernetes.io/role/elb=1)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#5A6C86;" vertex="1" parent="pub2a">
+          <mxGeometry x="20" y="170" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="priv2a" value="Private subnet&lt;br&gt;미사용 (NAT GW 없음)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=0;" vertex="1" parent="az2a">
+          <mxGeometry x="15" y="540" width="300" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- AZ 2b -->
+        <mxCell id="az2b" value="Availability Zone ap-northeast-2b" style="fillColor=none;strokeColor=#147EBA;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#147EBA;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;fontSize=11;" vertex="1" parent="vpc">
+          <mxGeometry x="370" y="170" width="360" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="pub2b" value="Public subnet" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#7AA116;fillColor=#F2F6E8;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;" vertex="1" parent="az2b">
+          <mxGeometry x="15" y="40" width="330" height="480" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nodeA" value="Karpenter 노드 (NodePool app)&lt;br&gt;t8i.medium · spot · role=app" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#D86613;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;" vertex="1" parent="pub2b">
+          <mxGeometry x="15" y="40" width="300" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="pod1" value="game-2048" style="aspect=fixed;html=1;dashed=0;whiteSpace=nowrap;fillColor=#2875E2;strokeColor=#ffffff;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=10;fontColor=#232F3E;shape=mxgraph.kubernetes.icon;prIcon=pod;" vertex="1" parent="nodeA">
+          <mxGeometry x="25" y="55" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="pod2" value="game-2048" style="aspect=fixed;html=1;dashed=0;whiteSpace=nowrap;fillColor=#2875E2;strokeColor=#ffffff;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=10;fontColor=#232F3E;shape=mxgraph.kubernetes.icon;prIcon=pod;" vertex="1" parent="nodeA">
+          <mxGeometry x="115" y="55" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="pod3" value="podinfo ×2&lt;br&gt;(ClusterIP)" style="aspect=fixed;html=1;dashed=0;whiteSpace=nowrap;fillColor=#7EA6E0;strokeColor=#ffffff;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=10;fontColor=#232F3E;shape=mxgraph.kubernetes.icon;prIcon=pod;" vertex="1" parent="nodeA">
+          <mxGeometry x="205" y="55" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="dsA" value="DaemonSet: aws-node · kube-proxy · eks-pod-identity-agent" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#5A6C86;" vertex="1" parent="nodeA">
+          <mxGeometry x="10" y="150" width="280" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nodeB" value="관리형 노드그룹 ng-system&lt;br&gt;t3.medium · on-demand · role=system" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#D86613;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;" vertex="1" parent="pub2b">
+          <mxGeometry x="15" y="260" width="300" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="txtB" value="&lt;b&gt;aws-load-balancer-controller&lt;/b&gt;&lt;br&gt;karpenter (replica 1/2)&lt;br&gt;argocd-repo-server · argocd-redis&lt;br&gt;argocd-applicationset-controller&lt;br&gt;metrics-server (1/2)&lt;br&gt;&lt;font color=&quot;#5A6C86&quot;&gt;+ DaemonSet 3종&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#232F3E;spacingLeft=4;" vertex="1" parent="nodeB">
+          <mxGeometry x="15" y="45" width="270" height="145" as="geometry" />
+        </mxCell>
+
+        <mxCell id="priv2b" value="Private subnet&lt;br&gt;미사용 (NAT GW 없음)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=0;" vertex="1" parent="az2b">
+          <mxGeometry x="15" y="540" width="330" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- AZ 2c -->
+        <mxCell id="az2c" value="Availability Zone ap-northeast-2c" style="fillColor=none;strokeColor=#147EBA;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#147EBA;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;fontSize=11;" vertex="1" parent="vpc">
+          <mxGeometry x="750" y="170" width="310" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="pub2c" value="Public subnet" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#7AA116;fillColor=#F2F6E8;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;" vertex="1" parent="az2c">
+          <mxGeometry x="15" y="40" width="280" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="note2c" value="Karpenter 노드는 2a/2b/2c 중&lt;br&gt;조건에 맞는 곳에 생성됨&lt;br&gt;(현재는 2b에 1대)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#5A6C86;" vertex="1" parent="pub2c">
+          <mxGeometry x="20" y="90" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nodeC" value="관리형 노드그룹 ng-system&lt;br&gt;t3.medium · on-demand · role=system" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_ec2_instance_contents;strokeColor=#D86613;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=30;fontColor=#D86613;dashed=0;" vertex="1" parent="pub2c">
+          <mxGeometry x="15" y="260" width="250" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="txtC" value="&lt;b&gt;karpenter&lt;/b&gt; (replica 2/2)&lt;br&gt;&lt;b&gt;argocd-application-controller&lt;/b&gt;&lt;br&gt;argocd-server (UI, port-forward)&lt;br&gt;coredns ×2&lt;br&gt;metrics-server (2/2)&lt;br&gt;&lt;font color=&quot;#5A6C86&quot;&gt;+ DaemonSet 3종&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#232F3E;spacingLeft=4;" vertex="1" parent="nodeC">
+          <mxGeometry x="15" y="45" width="225" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="priv2c" value="Private subnet&lt;br&gt;미사용 (NAT GW 없음)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=0;" vertex="1" parent="az2c">
+          <mxGeometry x="15" y="540" width="280" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- EKS 컨트롤 플레인 -->
+        <mxCell id="eksgrp" value="EKS 컨트롤 플레인 (AWS 관리 영역)" style="fillColor=none;strokeColor=#5A6C86;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#5A6C86;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;fontSize=12;" vertex="1" parent="region">
+          <mxGeometry x="1130" y="80" width="370" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="eks" value="&lt;b&gt;Amazon EKS&lt;/b&gt;&lt;br&gt;EKS 1.34" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eks;" vertex="1" parent="eksgrp">
+          <mxGeometry x="155" y="45" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ekstxt" value="API 엔드포인트: public + private&lt;br&gt;public 접근: 허용 IP로 제한&lt;br&gt;애드온: vpc-cni · coredns · kube-proxy ·&lt;br&gt;&amp;nbsp; eks-pod-identity-agent&lt;br&gt;Access Entry: Karpenter 노드 역할 (EC2_LINUX)&lt;br&gt;감사 로그: api · audit" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#232F3E;spacingLeft=4;" vertex="1" parent="eksgrp">
+          <mxGeometry x="15" y="160" width="340" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- 리전 서비스 -->
+        <mxCell id="svcgrp" value="연동 AWS 서비스" style="fillColor=none;strokeColor=#5A6C86;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#5A6C86;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;fontSize=12;" vertex="1" parent="region">
+          <mxGeometry x="1130" y="440" width="370" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2" value="Amazon EC2 API&lt;br&gt;Karpenter가 노드 생성/종료&lt;br&gt;Launch Template" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;" vertex="1" parent="svcgrp">
+          <mxGeometry x="60" y="50" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cw" value="CloudWatch Logs&lt;br&gt;컨트롤 플레인 로그" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" vertex="1" parent="svcgrp">
+          <mxGeometry x="250" y="50" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sqs" value="SQS 인터럽션 큐" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs;" vertex="1" parent="svcgrp">
+          <mxGeometry x="60" y="200" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iam" value="IAM 역할 (Pod Identity)&lt;br&gt;Karpenter · LBC용" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.role;" vertex="1" parent="svcgrp">
+          <mxGeometry x="245" y="213" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="eb" value="EventBridge&lt;br&gt;Spot 중단 · 리밸런스 이벤트" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" vertex="1" parent="svcgrp">
+          <mxGeometry x="60" y="350" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr" value="Amazon ECR Public&lt;br&gt;docker-2048 이미지&lt;br&gt;(IGW 경유 pull)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;" vertex="1" parent="svcgrp">
+          <mxGeometry x="250" y="350" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 연결선 ===== -->
+        <!-- ① 사용자 → IGW -->
+        <mxCell id="e1" value="① HTTP :80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="users" target="igw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- ② IGW → ALB -->
+        <mxCell id="e2" value="②" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#232F3E;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="igw" target="alb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- ③ ALB → Pod (target-type ip) -->
+        <mxCell id="e3a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#8C4FFF;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="alb" target="pod1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3b" value="③ Pod IP:80 직접 전달&lt;br&gt;(target-type: ip)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#8C4FFF;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="alb" target="pod2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- ④ GitHub → ArgoCD repo-server -->
+        <mxCell id="e4" value="④ ArgoCD가 Git pull (3분 주기, IGW 경유)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#E8590C;dashed=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="github" target="nodeB">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="913" />
+              <mxPoint x="250" y="1010" />
+              <mxPoint x="810" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- ⑤ ALB Controller → ALB -->
+        <mxCell id="e5" value="⑤ LBC가 ALB · TG · SG 규칙 생성" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#8C4FFF;dashed=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.45;entryX=0.5;entryY=0;" edge="1" parent="1" source="nodeB" target="alb">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="700" />
+              <mxPoint x="1000" y="170" />
+              <mxPoint x="800" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- ⑥ Karpenter → EC2 API -->
+        <mxCell id="e6" value="⑥ Karpenter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#ED7100;dashed=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="nodeC" target="ec2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1355" y="710" />
+              <mxPoint x="1355" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- SQS → Karpenter -->
+        <mxCell id="e7" value="중단 이벤트" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E7157B;dashed=1;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.85;" edge="1" parent="1" source="sqs" target="nodeC">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1395" y="730" />
+              <mxPoint x="1395" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- EventBridge → SQS -->
+        <mxCell id="e8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E7157B;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="eb" target="sqs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1540" y="880" />
+              <mxPoint x="1540" y="730" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- 관리자 → EKS API -->
+        <mxCell id="e9" value="kubectl · helm → EKS API :443" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#232F3E;dashed=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="admin" target="eks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1555" y="118" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <!-- 노드 ↔ API (private 엔드포인트) -->
+        <mxCell id="e10" value="private&lt;br&gt;엔드포인트" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#5A6C86;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.18;" edge="1" parent="1" source="eksgrp" target="vpc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- EKS → CloudWatch -->
+        <mxCell id="e11" value="api · audit 로그" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#E7157B;dashed=1;fontSize=10;labelBackgroundColor=#FFFFFF;exitX=0.757;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="eksgrp" target="cw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 범례 / 설명 -->
+        <mxCell id="legend" value="&lt;b&gt;트래픽&lt;/b&gt;&amp;nbsp; ① 사용자 → IGW → ② ALB (HTTP 80) → ③ Pod IP:80 직접 (target-type: ip, VPC CNI가 파드에 VPC IP를 부여)&lt;br&gt;&lt;b&gt;제어&lt;/b&gt;&amp;nbsp; ④ ArgoCD: GitHub apps/game-2048 pull → application-controller가 자동 Sync (prune · selfHeal)&amp;nbsp; ⑤ AWS Load Balancer Controller: Ingress를 보고 ALB · 타깃 그룹 · SG 규칙 생성&amp;nbsp; ⑥ Karpenter: Pending 파드를 보고 EC2 생성/정리, SQS로 Spot 중단 수신&lt;br&gt;&lt;b&gt;권한&lt;/b&gt;&amp;nbsp; Karpenter · LBC는 Pod Identity(eks-pod-identity-agent)로 IAM 역할 사용, Karpenter 노드는 Access Entry(EC2_LINUX)로 클러스터 조인&lt;br&gt;&lt;b&gt;참고&lt;/b&gt;&amp;nbsp; NAT GW 없음, 노드는 퍼블릭 서브넷 (실습용 구성)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#232F3E;whiteSpace=wrap;strokeColor=#D5DBDB;fillColor=#FAFAFA;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1080" width="1560" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
